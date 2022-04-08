@@ -1,0 +1,6 @@
+.env
+ssl/*
+!ssl/.gitkeep
+public/*
+!public/.gitkeep
+data/

@@ -1,0 +1,10 @@
+
+# SSL Setup
+SSL is preconfigured to use certificates in the ssl directory with the following filenames e.g
+- cert_file: ```ssl/server.crt```
+- cert_key: ```ssl/server.key```
+
+## Creating a development certificate using mkcert
+We recommend using mkcert to generate a dev certificate. 
+
+After installing mkcert and running the ```mkcert install``` command you can generate this certificate automatically with the following command (replace docker.myproject.local with your projects hostname)

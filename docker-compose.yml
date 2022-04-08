@@ -1,0 +1,74 @@
+version: '3'
+services:
+  mysql:
+    image: mariadb:10.3.17
+    command: --max_allowed_packet=256M
+    volumes:
+      - "./data/db:/var/lib/mysql:delegated"
+    ports:
+       - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+  nginx:
+    image: webdevops/php-nginx-dev:${PHP_VERSION}
+    links:
+      - mail
+    environment:
+      - WEB_DOCUMENT_ROOT=/app/public
+      - PHP_DISPLAY_ERRORS=1
+      - PHP_MEMORY_LIMIT=2048M
+      - PHP_MAX_EXECUTION_TIME=-1
+      - XDEBUG_MODE=debug
+      - XDEBUG_START_WITH_REQUEST=1
+      - XDEBUG_CLIENT_PORT=9000
+      - XDEBUG_CLIENT_HOST=host.docker.internal
+      - POSTFIX_RELAYHOST=[mail]:1025
+    volumes:
+      - ./:/app:rw,cached
+      - ./ssl:/opt/docker/etc/nginx/ssl/
+    ports:
+      - 80:80
+      - 443:443
+      - 443:443/udp
+      - 7080:7080
+  phpmyadmin:
+    # image: bitnami/phpmyadmin:latest
+    image: bitnami/phpmyadmin:5.0.2-debian-10-r72
+    ports:
+      - 8080:80
+      - 8443:443
+    environment:
+        DATABASE_HOST: mysql
+    volumes:
+      - ./ssl:/certs
+  mail:
+    image: mailhog/mailhog
+    ports:
+      - 1025:1025
+      - 8025:8025
+    environment:
+      - VIRTUAL_HOST=docker.mailhog.local
+      - VIRTUAL_PORT=8026
+  stunnel:
+    image: dweomer/stunnel
+    environment:
+      - STUNNEL_SERVICE=smtps
+      - STUNNEL_ACCEPT=8026
+      - STUNNEL_CONNECT=mail:8025
+    volumes:
+      - ./ssl/server.crt:/etc/stunnel/stunnel.pem:ro
+      - ./ssl/server.key:/etc/stunnel/stunnel.key:ro
+    ports:
+      - 8026:8026 # smtp tls
+  webhookrelay:
+    image: webhookrelay/webhookrelayd
+    links:
+      - nginx:nginx.local
+    environment:
+      KEY: ${WEBHOOK_RELAY_KEY}
+      SECRET: ${WEBHOOK_RELAY_SECRET}
+      BUCKET: ${WEBHOOK_RELAY_BUCKET}
+      INSECURE: 'true'
