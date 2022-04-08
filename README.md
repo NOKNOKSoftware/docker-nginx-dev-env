@@ -18,8 +18,12 @@ NOKNOK Studios development environment for PHP / Wordpress development projects.
 - phpmyadmin: https://docker.phpmyadmin.local:8443
 - mailhog: https://docker.mailhog.local:8026
 
+## MariaDB connection details
+- Hostname: mysql
+- Username: Defined in your .env file (default "wordpress")
+- Password: Defined in your .env file (default "wordpress")
 
-## Hostname
+## Hostnames Setup
 We recommend assigning your project a hostname. In our experience some browsers (and some JS libraries) act weirdly when interacting with ```https://localhost``` so assigning a hostname to your project can help prevent headaches during development.
 
 
