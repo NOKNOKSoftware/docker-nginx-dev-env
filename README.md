@@ -11,6 +11,9 @@ NOKNOK Studios development environment for PHP / Wordpress development projects.
 - webhook relay (Provided by [Webhook Relay](https://webhookrelay.com/))
 
 ## Starting the docker-compose project
+Copy and edit ```.env.sample``` to ```.env```
+
+Then run:
 ```docker-compose up -d```
 
 ## Accessing services over HTTP
