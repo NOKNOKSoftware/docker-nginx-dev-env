@@ -63,12 +63,3 @@ services:
       - ./ssl/server.key:/etc/stunnel/stunnel.key:ro
     ports:
       - 8026:8026 # smtp tls
-  webhookrelay:
-    image: webhookrelay/webhookrelayd
-    links:
-      - nginx:nginx.local
-    environment:
-      KEY: ${WEBHOOK_RELAY_KEY}
-      SECRET: ${WEBHOOK_RELAY_SECRET}
-      BUCKET: ${WEBHOOK_RELAY_BUCKET}
-      INSECURE: 'true'
